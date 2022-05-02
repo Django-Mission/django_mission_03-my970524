@@ -45,9 +45,14 @@ class Faq(models.Model):
 # 1대1 문의 Inquiry
 class Inquiry(models.Model):
     # choices에 들어갈 변수들 정의
+    # 카테고리 변수
     GENERAL = 'general'
     ACCOUNT = 'account'
     ETCETERA = 'etc'
+    # 상태 변수
+    ENQUIRE = 'enquire'
+    ACCEPT = 'accept'
+    CLOSE = 'close'
 
     # choices 튜플 리스트 생성
     CATEGORY_CHOICES = [
@@ -84,10 +89,22 @@ class Inquiry(models.Model):
         related_name='updated_inquiries',
         blank=True,
     )
+    STATUS_CHOICES = [
+        (ENQUIRE, '문의 등록'),
+        (ACCEPT, '접수 완료'),
+        (CLOSE, '답변 완료')
+    ]
+    status = models.CharField(
+        '상태', 
+        max_length=15, 
+        choices=STATUS_CHOICES, 
+        default=ENQUIRE
+    )
+
 
 # 답변 Answer
 class Answer(models.Model):
-    content = models.TextField('답변 내용')
+    content = models.TextField('답변 내용', blank=True)
     inquiry = models.ForeignKey(
         to=Inquiry, 
         verbose_name='참조 문의글', 
@@ -96,7 +113,8 @@ class Answer(models.Model):
     writer = models.ForeignKey(
         to=User, 
         on_delete=models.CASCADE, 
-        verbose_name='답변 작성자'
+        verbose_name='답변 작성자',
+        blank=True
     )
     created_at = models.DateTimeField('답변 작성일시', auto_now_add=True)
     updated_at = models.DateTimeField('최종 수정일시', auto_now=True)
