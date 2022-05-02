@@ -87,7 +87,7 @@ class Inquiry(models.Model):
 
 # 답변 Answer
 class Answer(models.Model):
-    content = models.TextField('답변 내용')
+    content = models.TextField('답변 내용', blank=True)
     inquiry = models.ForeignKey(
         to=Inquiry, 
         verbose_name='참조 문의글', 
@@ -96,7 +96,8 @@ class Answer(models.Model):
     writer = models.ForeignKey(
         to=User, 
         on_delete=models.CASCADE, 
-        verbose_name='답변 작성자'
+        verbose_name='답변 작성자',
+        blank=True
     )
     created_at = models.DateTimeField('답변 작성일시', auto_now_add=True)
     updated_at = models.DateTimeField('최종 수정일시', auto_now=True)
